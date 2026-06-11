@@ -7,19 +7,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        /* CSS khusus agar saat di-print (Cetak PDF), tampilannya rapi */
+        /* CSS SAKTI UNTUK CETAK PDF RAPI */
         @media print {
-            body * { visibility: hidden; }
-            #cetakArea, #cetakArea * { visibility: visible; }
-            #cetakArea { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none !important; }
+            /* Sembunyikan web aslinya saat nge-print */
+            body > *:not(#areaCetakSurat) { display: none !important; }
+            
+            /* Tampilkan HANYA surat laporannya saja */
+            #areaCetakSurat { display: block !important; }
+            
+            /* Paksa browser agar background dan layout kembali normal (SweetAlert suka ngunci layar) */
+            body.swal2-shown { overflow: auto !important; height: auto !important; }
+            .swal2-container { display: none !important; }
+            @page { margin: 2cm; }
         }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
 
-    <nav class="bg-white shadow-md py-4 no-print">
+    <nav class="bg-white shadow-md py-4">
         <div class="max-w-4xl mx-auto px-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-heart-pulse text-blue-600 text-3xl"></i>
@@ -31,7 +38,7 @@
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto mt-8 px-4 mb-12" id="cetakArea">
+    <main class="max-w-4xl mx-auto mt-8 px-4 mb-12" id="areaFormUtama">
         <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
             <div class="mb-6 border-b pb-4">
                 <h2 class="text-2xl font-bold text-gray-800"><i class="fa-solid fa-file-medical text-blue-500 mr-2"></i> Formulir Indikator Kesehatan</h2>
@@ -39,7 +46,7 @@
             </div>
 
             <form id="prediksiForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-semibold mb-1">Umur</label><input type="number" id="age" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                <div><label class="block text-sm font-semibold mb-1">Umur (Tahun)</label><input type="number" id="age" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
                 <div><label class="block text-sm font-semibold mb-1">Jenis Kelamin (1=Pria, 0=Wanita)</label><input type="number" id="sex" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
                 <div><label class="block text-sm font-semibold mb-1">Tipe Nyeri Dada (cp: 0-3)</label><input type="number" id="cp" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
                 <div><label class="block text-sm font-semibold mb-1">Tekanan Darah (trestbps)</label><input type="number" id="trestbps" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
@@ -53,7 +60,7 @@
                 <div><label class="block text-sm font-semibold mb-1">Jumlah Pembuluh Darah (ca: 0-4)</label><input type="number" id="ca" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
                 <div class="md:col-span-2"><label class="block text-sm font-semibold mb-1">Thalassemia (thal: 0-3)</label><input type="number" id="thal" required class="w-1/2 border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
                 
-                <div class="md:col-span-2 mt-4 p-5 bg-blue-50 rounded-lg border border-blue-200 no-print">
+                <div class="md:col-span-2 mt-4 p-5 bg-blue-50 rounded-lg border border-blue-200">
                     <h3 class="text-sm font-semibold mb-3 text-blue-800"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Upload Berkas Medis (Cloudinary)</h3>
                     <div class="flex flex-col sm:flex-row items-center gap-3">
                         <input type="file" id="fileInput" accept="image/*" class="w-full sm:w-auto text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer">
@@ -64,7 +71,7 @@
                     <p id="statusUpload" class="text-xs text-blue-600 mt-3 font-medium"></p>
                 </div>
                 
-                <div class="md:col-span-2 mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-200 no-print">
+                <div class="md:col-span-2 mt-4 bg-yellow-50 p-4 rounded-lg border border-yellow-200">
                     <label class="flex items-start gap-3 cursor-pointer">
                         <input type="checkbox" id="disclaimerCheck" class="mt-1 w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
                         <span class="text-sm text-gray-700">
@@ -73,7 +80,7 @@
                     </label>
                 </div>
 
-                <div class="md:col-span-2 mt-2 no-print">
+                <div class="md:col-span-2 mt-2">
                     <button type="submit" id="btnSubmit" class="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-lg transition duration-200 text-lg shadow-lg">
                         <i class="fa-solid fa-microchip"></i> <span>Jalankan Analisis AI</span>
                     </button>
@@ -82,9 +89,12 @@
         </div>
     </main>
 
+    <div id="areaCetakSurat" style="display: none;">
+        </div>
+
     <script>
         // ==========================================
-        // FUNGSI 1: UPLOAD GAMBAR KE CLOUDINARY (Tidak Diubah)
+        // FUNGSI 1: UPLOAD GAMBAR KE CLOUDINARY
         // ==========================================
         async function uploadKeCloudinary() {
             const inputElemen = document.getElementById('fileInput');
@@ -122,19 +132,18 @@
         }
 
         // ==========================================
-        // FUNGSI 2: PREDIKSI AI KE BACKEND AWS (Diperbarui)
+        // FUNGSI 2: PREDIKSI & CETAK LAPORAN PROFESIONAL
         // ==========================================
         document.getElementById('prediksiForm').addEventListener('submit', async function(e) {
             e.preventDefault(); 
 
-            // Validasi Persetujuan Medis
-            const isChecked = document.getElementById('disclaimerCheck').checked;
-            if (!isChecked) {
+            // Validasi
+            if (!document.getElementById('disclaimerCheck').checked) {
                 Swal.fire({ icon: 'warning', title: 'Persetujuan Diperlukan', text: 'Harap centang kotak persetujuan medis sebelum melanjutkan.' });
                 return;
             }
 
-            // Ubah Tombol Jadi Loading
+            // Animasi Tombol
             const btnSubmit = document.getElementById('btnSubmit');
             const originalBtnHtml = btnSubmit.innerHTML;
             btnSubmit.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>AI Sedang Menganalisis...</span>`;
@@ -158,42 +167,115 @@
             };
 
             try {
-                // Tembak ke API AWS
+                // Tembak API
                 const response = await fetch('http://54.179.236.97:8000/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
 
-                // Tampilkan Hasil dengan Rekomendasi Medis & Tombol Print
+                // PERSIAPAN KONTEN SURAT CETAK (Dibuat otomatis sebelum diprint)
+                const tgl = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const gender = payload.sex === 1 ? 'Laki-laki' : 'Perempuan';
+                
+                // Siapkan template laporan PDF
+                document.getElementById('areaCetakSurat').innerHTML = `
+                    <div style="font-family: Arial, sans-serif; color: #1f2937;">
+                        <div style="text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px;">
+                            <h1 style="color: #2563eb; margin: 0; font-size: 28px;">MediCare AI</h1>
+                            <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 16px;">Laporan Skrining Risiko Penyakit Jantung Terintegrasi AI</p>
+                        </div>
+                        
+                        <h3 style="background-color: #f3f4f6; padding: 10px; border-radius: 5px;">A. Data Klinis Pasien</h3>
+                        <table style="width: 100%; margin-bottom: 30px; border-collapse: collapse; font-size: 14px;">
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><b>Umur</b></td><td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">: ${payload.age} Tahun</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><b>Jenis Kelamin</b></td><td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">: ${gender}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><b>Tekanan Darah</b></td><td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">: ${payload.trestbps} mmHg</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><b>Kolesterol</b></td><td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">: ${payload.chol} mg/dl</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><b>Detak Maksimal</b></td><td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">: ${payload.thalach} bpm</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #e5e7eb;"><b>ST Depression</b></td><td style="padding: 10px; border-bottom: 1px solid #e5e7eb;">: ${payload.oldpeak}</td>
+                            </tr>
+                        </table>
+
+                        <h3 style="background-color: #f3f4f6; padding: 10px; border-radius: 5px;">B. Kesimpulan AI Engine</h3>
+                        <div style="background-color: ${result.kode_hasil === 1 ? '#fef2f2' : '#f0fdf4'}; padding: 25px; border-radius: 8px; border-left: 6px solid ${result.kode_hasil === 1 ? '#ef4444' : '#22c55e'}; margin-top: 15px;">
+                            <h2 style="margin-top: 0; color: ${result.kode_hasil === 1 ? '#b91c1c' : '#15803d'};">${result.kode_hasil === 1 ? '⚠️ Risiko Tinggi (High Risk)' : '✅ Risiko Rendah (Low Risk)'}</h2>
+                            <p style="font-size: 16px; margin: 10px 0;">Sistem membaca pola yang menunjukkan: <b>${result.status_prediksi}</b></p>
+                            <div style="margin-top: 15px;">
+                                <b>Rekomendasi Medis:</b><br>
+                                ${result.kode_hasil === 1 ? 
+                                  '- Segera buat janji konsultasi dengan Dokter Spesialis Jantung (Kardiolog).<br>- Bawa hasil laporan ini beserta EKG fisik Anda.<br>- Hindari stres berlebih dan aktivitas fisik berat sementara waktu.' : 
+                                  '- Indikator jantung Anda terpantau baik.<br>- Tetap pertahankan pola makan rendah lemak.<br>- Lakukan olahraga kardio rutin (seperti jogging/sepeda).'}
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 60px; text-align: right;">
+                            <p>Dicetak secara otomatis pada:<br><b>${tgl}</b></p>
+                            <p style="font-style: italic; font-size: 11px; color: #9ca3af; margin-top: 30px;">
+                                *Disclaimer: Laporan ini dihasilkan dari model Machine Learning berdasarkan data input dan tidak sah digunakan sebagai diagnosis mutlak tanpa verifikasi tenaga medis profesional.
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                // TAMPILAN POP-UP MEWAH DI LAYAR (SweetAlert)
                 if(result.kode_hasil === 1) {
                     Swal.fire({
+                        title: '<span style="color:#b91c1c">Peringatan Klinis AI</span>',
+                        html: `
+                            <div class="bg-red-50 p-4 rounded-xl border border-red-200 mt-2 text-left">
+                                <h4 class="text-red-700 font-bold text-lg mb-2"><i class="fa-solid fa-triangle-exclamation"></i> ${result.status_prediksi}</h4>
+                                <hr class="border-red-200 my-2">
+                                <ul class="text-sm text-red-600 space-y-2 list-disc ml-4">
+                                    <li>Segera jadwalkan konsultasi dengan Kardiolog.</li>
+                                    <li>Bawa hasil laporan cetak ini ke rumah sakit.</li>
+                                    <li>Hindari aktivitas fisik ekstrem.</li>
+                                </ul>
+                            </div>`,
                         icon: 'error',
-                        title: 'Risiko Tinggi Penyakit Jantung',
-                        html: `<div class="text-left mt-3"><b>Diagnosis AI:</b> ${result.status_prediksi}<br><br><b>Rekomendasi Tindakan:</b><br>1. Segera jadwalkan konsultasi dengan Kardiolog.<br>2. Bawa hasil EKG dan tes darah Anda.<br>3. Hindari aktivitas fisik berat untuk sementara waktu.</div>`,
-                        confirmButtonColor: '#d33',
                         showCancelButton: true,
                         cancelButtonText: 'Tutup',
-                        confirmButtonText: '<i class="fa-solid fa-print"></i> Cetak Laporan'
-                    }).then((res) => { if (res.isConfirmed) window.print(); });
+                        confirmButtonText: '<i class="fa-solid fa-print"></i> Cetak Laporan Pasien',
+                        confirmButtonColor: '#ef4444',
+                        cancelButtonColor: '#6b7280',
+                        width: '32em'
+                    }).then((res) => { 
+                        if (res.isConfirmed) { window.print(); } 
+                    });
                 } else {
                     Swal.fire({
+                        title: '<span style="color:#15803d">Hasil Skrining Normal</span>',
+                        html: `
+                            <div class="bg-green-50 p-4 rounded-xl border border-green-200 mt-2 text-left">
+                                <h4 class="text-green-700 font-bold text-lg mb-2"><i class="fa-solid fa-shield-heart"></i> ${result.status_prediksi}</h4>
+                                <hr class="border-green-200 my-2">
+                                <ul class="text-sm text-green-700 space-y-2 list-disc ml-4">
+                                    <li>Indikator jantung Anda terpantau sehat.</li>
+                                    <li>Tetap jaga pola makan bergizi.</li>
+                                    <li>Rutin berolahraga ringan minimal 30 menit/hari.</li>
+                                </ul>
+                            </div>`,
                         icon: 'success',
-                        title: 'Hasil Skrining Normal',
-                        html: `<div class="text-left mt-3"><b>Diagnosis AI:</b> ${result.status_prediksi}<br><br><b>Rekomendasi Tindakan:</b><br>1. Jantung Anda terindikasi sehat.<br>2. Tetap jaga pola makan bergizi.<br>3. Rutin berolahraga ringan dan kelola stres.</div>`,
-                        confirmButtonColor: '#2563eb',
                         showCancelButton: true,
                         cancelButtonText: 'Tutup',
-                        confirmButtonText: '<i class="fa-solid fa-print"></i> Cetak Laporan'
-                    }).then((res) => { if (res.isConfirmed) window.print(); });
+                        confirmButtonText: '<i class="fa-solid fa-print"></i> Cetak Laporan Pasien',
+                        confirmButtonColor: '#2563eb',
+                        cancelButtonColor: '#6b7280',
+                        width: '32em'
+                    }).then((res) => { 
+                        if (res.isConfirmed) { window.print(); } 
+                    });
                 }
 
             } catch (error) {
                 Swal.fire('Koneksi Gagal', 'Gagal menghubungi Server AI di AWS.', 'error');
             } finally {
-                // Kembalikan tombol ke keadaan semula
                 btnSubmit.innerHTML = originalBtnHtml;
                 btnSubmit.disabled = false;
                 btnSubmit.classList.replace('bg-gray-400', 'bg-blue-600');
