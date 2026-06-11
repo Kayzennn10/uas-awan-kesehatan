@@ -28,8 +28,8 @@ Setiap kali ada perubahan kode yang di-*push* ke branch `main`, GitHub Actions a
 
 ## 👥 Anggota Kelompok
 - Rifki (Frontend & CI/CD)
-- [Nama Kamu] (Cloud Architecture & Backend)
-- [Nama Anggota 3 jika ada] (AI Service)
+- Azka dan Rifki (Cloud Architecture & Backend)
+- Azka (AI Service)
 
 ---
 *Dibuat untuk Tugas Cloud Computing - Institut Teknologi Nasional (Itenas) 2026*
