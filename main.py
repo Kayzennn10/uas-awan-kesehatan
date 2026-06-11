@@ -1,10 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import pandas as pd
 
 # Inisialisasi Aplikasi FastAPI
 app = FastAPI(title="API Prediksi Penyakit Jantung", description="Backend AI Service")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Mengizinkan web dari mana saja untuk mengakses API ini
+    allow_credentials=True,
+    allow_methods=["*"],  # Mengizinkan semua metode (termasuk POST dan OPTIONS)
+    allow_headers=["*"],
+)
+
 
 # Muat Model dan Objek Preprocessing
 model = joblib.load('rf_heart_model.pkl')
