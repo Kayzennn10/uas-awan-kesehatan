@@ -1,10 +1,9 @@
-version: '3'
 services:
   frontend:
-    build: .
+    build: ./frontend    # Sekarang Docker tahu harus mencari di folder frontend
     ports:
       - "80:80"
   backend:
-    build: ./backend
+    build: ./backend     # Docker mencari Dockerfile di folder backend
     ports:
       - "8000:8000"
