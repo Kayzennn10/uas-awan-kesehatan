@@ -3,154 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Health Screening | Prediksi Jantung</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased">
-
-    <nav class="bg-white shadow-md py-4">
-        <div class="max-w-6xl mx-auto px-4 flex items-center gap-4">
-            <img src="https://via.placeholder.com/50?text=GCP+Logo" alt="Logo GCP" class="h-10 w-10 object-cover rounded-full border-2 border-blue-500">
-            <h1 class="text-2xl font-bold text-blue-600">MediCare AI Screening</h1>
-        </div>
-    </nav>
-
-    <main class="max-w-4xl mx-auto mt-8 px-4 mb-12">
-        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-            <div class="mb-6 border-b pb-4">
-                <h2 class="text-xl font-bold text-gray-800">Formulir Indikator Kesehatan</h2>
-                <p class="text-sm text-gray-500">Masukkan data klinis pasien untuk dianalisis oleh AI Engine.</p>
-            </div>
-
-            <form id="prediksiForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block text-sm font-semibold mb-1">Umur</label><input type="number" id="age" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Jenis Kelamin (1=Pria, 0=Wanita)</label><input type="number" id="sex" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Tipe Nyeri Dada (cp: 0-3)</label><input type="number" id="cp" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Tekanan Darah (trestbps)</label><input type="number" id="trestbps" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Kolesterol (chol)</label><input type="number" id="chol" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Gula Darah Puasa (fbs: 1=>120, 0=<120)</label><input type="number" id="fbs" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Hasil EKG (restecg: 0-2)</label><input type="number" id="restecg" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Detak Jantung Maksimal (thalach)</label><input type="number" id="thalach" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Angina Induksi Olahraga (exang: 1=Ya, 0=Tidak)</label><input type="number" id="exang" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">ST Depression (oldpeak)</label><input type="number" step="0.1" id="oldpeak" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Kemiringan ST Segment (slope: 0-2)</label><input type="number" id="slope" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div><label class="block text-sm font-semibold mb-1">Jumlah Pembuluh Darah (ca: 0-4)</label><input type="number" id="ca" required class="w-full border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                <div class="md:col-span-2"><label class="block text-sm font-semibold mb-1">Thalassemia (thal: 0-3)</label><input type="number" id="thal" required class="w-1/2 border rounded-lg p-2 bg-gray-50 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                
-                <div class="md:col-span-2 mt-4 p-5 bg-blue-50 rounded-lg border border-blue-200">
-                    <h3 class="text-sm font-semibold mb-3 text-blue-800">Upload Berkas Medis (Fitur Multi-Cloud Storage)</h3>
-                    <div class="flex flex-col sm:flex-row items-center gap-3">
-                        <input type="file" id="fileInput" accept="image/*" class="w-full sm:w-auto text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 cursor-pointer">
-                        <button type="button" onclick="uploadKeCloudinary()" class="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-2 px-6 rounded-full transition duration-200">
-                            Upload ke Cloud
-                        </button>
-                    </div>
-                    <p id="statusUpload" class="text-xs text-blue-600 mt-3 font-medium"></p>
-                </div>
-                
-                <div class="md:col-span-2 mt-2">
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200">
-                        Jalankan Analisis AI
-                    </button>
-                </div>
-            </form>
-        </div>
-    </main>
-
-    <script>
-        // ==========================================
-        // FUNGSI 1: UPLOAD GAMBAR KE CLOUDINARY
-        // ==========================================
-        async function uploadKeCloudinary() {
-            const inputElemen = document.getElementById('fileInput');
-            const fileGambar = inputElemen.files[0];
-            const statusTeks = document.getElementById('statusUpload');
-
-            if (!fileGambar) {
-                Swal.fire('Perhatian', 'Silakan pilih gambar medis terlebih dahulu!', 'warning');
-                return;
-            }
-
-            statusTeks.innerText = "Sedang mengunggah ke Cloudinary... Mohon tunggu.";
-            
-            const formData = new FormData();
-            formData.append("file", fileGambar);
-            formData.append("upload_preset", "xzy123"); // Preset Unsigned milikmu
-
-            try {
-                const response = await fetch("https://api.cloudinary.com/v1_1/dfdk6cph2/image/upload", {
-                    method: "POST",
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.secure_url) {
-                    statusTeks.innerHTML = `Sukses! File tersimpan di Cloudinary. <a href="${data.secure_url}" target="_blank" class="underline text-blue-800 font-bold">Lihat Gambar</a>`;
-                    Swal.fire({
-                        title: 'Upload Berhasil!',
-                        text: 'Berkas medis telah diamankan di Object Storage (Cloudinary).',
-                        icon: 'success',
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                } else {
-                    statusTeks.innerText = "Gagal mengunggah file.";
-                    Swal.fire('Error', 'Gagal mengunggah gambar ke Cloud.', 'error');
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                statusTeks.innerText = "Terjadi kesalahan sistem saat menghubungi Cloudinary.";
-            }
+    <title>MediCare AI Screening - Welcome</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f7f6;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .welcome-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+        .icon-heart {
+            font-size: 4rem;
+            color: #0d6efd;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
 
-        // ==========================================
-        // FUNGSI 2: PREDIKSI AI KE BACKEND AWS
-        // ==========================================
-        document.getElementById('prediksiForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); 
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="welcome-card mx-auto">
+                    <i class="fa-solid fa-heart-pulse icon-heart"></i>
+                    <h1 class="mb-3 text-primary fw-bold">MediCare AI</h1>
+                    <h4 class="text-secondary mb-4">Sistem Skrining Risiko Penyakit Jantung</h4>
+                    
+                    <p class="text-muted mb-4">
+                        Selamat datang. Platform ini menggunakan teknologi *Machine Learning* untuk memprediksi tingkat risiko penyakit jantung berdasarkan data klinis dasar Anda.
+                    </p>
 
-            const payload = {
-                age: parseFloat(document.getElementById('age').value),
-                sex: parseFloat(document.getElementById('sex').value),
-                cp: parseFloat(document.getElementById('cp').value),
-                trestbps: parseFloat(document.getElementById('trestbps').value),
-                chol: parseFloat(document.getElementById('chol').value),
-                fbs: parseFloat(document.getElementById('fbs').value),
-                restecg: parseFloat(document.getElementById('restecg').value),
-                thalach: parseFloat(document.getElementById('thalach').value),
-                exang: parseFloat(document.getElementById('exang').value),
-                oldpeak: parseFloat(document.getElementById('oldpeak').value),
-                slope: parseFloat(document.getElementById('slope').value),
-                ca: parseFloat(document.getElementById('ca').value),
-                thal: parseFloat(document.getElementById('thal').value)
-            };
+                    <div class="alert alert-warning text-start" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        <strong>Perhatian:</strong> Hasil dari sistem ini hanya berupa skrining awal dan <b>tidak dapat menggantikan diagnosis medis resmi</b> dari dokter.
+                    </div>
 
-            Swal.fire({ title: 'Memproses Data...', text: 'AI AWS sedang menganalisis indikator', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+                    <a href="form.html" class="btn btn-primary btn-lg mt-3 px-5 py-3 rounded-pill fw-bold">
+                        Mulai Skrining Sekarang <i class="fa-solid fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            try {
-                // Tembak ke API AWS (Pastikan Server EC2 sedang Running)
-                const response = await fetch('http://54.179.236.97:8000/predict', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if(result.kode_hasil === 1) {
-                    Swal.fire('Peringatan Medis!', result.status_prediksi, 'error');
-                } else {
-                    Swal.fire('Hasil Normal', result.status_prediksi, 'success');
-                }
-
-            } catch (error) {
-                Swal.fire('Koneksi Gagal', 'Gagal menghubungi Server AI di AWS. Pastikan Docker berjalan.', 'error');
-            }
-        });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
