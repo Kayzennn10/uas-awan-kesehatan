@@ -6,9 +6,12 @@ WORKDIR /app
 
 # Salin requirements dan install library
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Salin seluruh kode backend dan model AI kamu
+
+# Install dengan flag agar tidak mendownload cache yang menumpuk
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
 COPY . .
 
 # Ekspos port 8000
